@@ -27,12 +27,18 @@ def calc_jacobian(X,p):
 
     ### Your job starts here ###
 
+    for row in range(N):
+        data = X[row, 0]
+        J[row, 0] = data ** p[1, 0]
+        J[row, 1] = p[0, 0] * (data ** p[1, 0]) * np.log(data)
+        J[row, 2] = data
+        J[row, 3] = 1
 
     ### Your job ends here ###
 
     return J
 
-GAUSS_NEWTON_ITERATIONS=1000 #PLEASE change your iteration count here
+GAUSS_NEWTON_ITERATIONS=1000#PLEASE change your iteration count here
 def nonlinear_regression_gn(X, Y, initialP):
     """
     Estimate parameters for model function a*(x**b)+c*x+d
@@ -58,6 +64,15 @@ def nonlinear_regression_gn(X, Y, initialP):
 
     for iteration in range(GAUSS_NEWTON_ITERATIONS): #PLEASE do not change this line
 
+        delta_y = np.subtract(Y, model_function(X, p))
+
+        jacobian_matrix = calc_jacobian(X, p)
+
+        inversion = np.linalg.inv(np.matmul(jacobian_matrix.transpose(), jacobian_matrix))
+        inversion_multiply_transpose = np.matmul(inversion, jacobian_matrix.transpose())
+        delta_p = np.matmul(inversion_multiply_transpose, delta_y)
+
+        p = np.add(p, delta_p)
 
     ### Your job ends here ###
     return p
@@ -86,11 +101,15 @@ def nonlinear_regression_gd(X, Y, initialP):
 
     ### Your job starts here ###
 
-
-    for iteration in range(GRADIENT_DESCENT_ITERATIONS): #PLEASE do not change this line
-
     # PLEASE use LEARNING_RATE variable defined above
+    for iteration in range(GRADIENT_DESCENT_ITERATIONS): #PLEASE do not change this line
+        delta_y = np.subtract(Y, model_function(X, p))
 
+        jacobian_matrix = calc_jacobian(X, p)
+
+        gradient = -2 * np.matmul(jacobian_matrix.transpose(), delta_y)
+
+        p = np.subtract(p, LEARNING_RATE * gradient)
 
     ### Your job ends here ###
     return p

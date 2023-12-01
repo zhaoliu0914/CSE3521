@@ -25,7 +25,10 @@ def linear_regression(X, Y):
 
     ### Your job starts here ###
 
-    p= #Solve for the parameters, refer to slide 19
+    # inversion
+    inversion = np.linalg.inv(np.matmul(X.transpose(), X))
+    inversion_multiply_transpose = np.matmul(inversion, X.transpose())
+    p = np.matmul(inversion_multiply_transpose, Y)
 
     ### Your job ends here ###
     return p
@@ -46,7 +49,15 @@ def polynomial_regression(X, Y, degree):
 
     ### Your job starts here ###
 
-    A= #Constuct the proper A matrix for a polynomial, refer to slide 22
+    dimension_row = X.shape[0]
+    dimension_column = degree + 1
+
+    # initialize polynomial matrix A
+    A = np.ones((dimension_row, dimension_column))
+
+    for column in range(1, dimension_column):
+        for row in range(dimension_row):
+            A[row, column] = X[row, 0] ** column
 
     ### Your job ends here ###
     
